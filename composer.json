@@ -1,0 +1,60 @@
+{
+    "name": "final-gene/rest-resource-authentication-module",
+    "description": "Authentication functionality for REST resources",
+    "type": "library",
+    "homepage": "https://gitlab.devel.final-gene.de/final-gene/rest-resource-authentication-module",
+    "license": "proprietary",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://satis.final-gene.de"
+        }
+    ],
+    "authors": [
+        {
+            "name": "Frank Giesecke",
+            "email": "frank.giesecke@final-gene.de",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "zendframework/zend-config": "^2.5",
+        "zendframework/zend-modulemanager": "^2.5",
+        "zfcampus/zf-api-problem": "^1.1",
+        "zfcampus/zf-rest": "^1.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8",
+        "zendframework/zend-filter": "^2.5",
+        "zendframework/zend-form": "^2.5",
+        "zendframework/zend-i18n": "^2.5",
+        "zendframework/zend-inputfilter": "^2.5",
+        "zendframework/zend-log": "^2.5",
+        "zendframework/zend-serializer": "^2.5",
+        "zendframework/zend-stdlib": "^2.5",
+        "zendframework/zend-test": "^2.5",
+        "zendframework/zend-validator": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "FinalGene\\RestResourceAuthenticationModule\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FinalGene\\RestResourceAuthenticationModuleTest\\": "tests/src"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "archive": {
+        "exclude": [
+            "/.*",
+            "/composer.*",
+            "/phpunit.*",
+            "/tests"
+        ]
+    }
+}

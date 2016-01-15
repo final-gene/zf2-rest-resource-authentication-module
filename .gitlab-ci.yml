@@ -1,0 +1,9 @@
+types:
+  - test
+
+job_unit_test:
+  type: test
+  tags:
+    - phpunit
+  script:
+    - phing run-test

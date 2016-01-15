@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="doctrine-module" default="build-info">
+    <target name="build-info">
+        <echo message="Please specify one of the following build targets" />
+        <echo message="" />
+        <echo message="    run-test: run test scripts to validate the code" />
+    </target>
+
+    <target name="composer-install-dev">
+        <exec executable="composer">
+            <arg value="install" />
+        </exec>
+    </target>
+
+    <target name="composer-install">
+        <exec executable="composer" checkreturn="true">
+            <arg value="install" />
+            <arg value="--no-dev" />
+        </exec>
+    </target>
+
+    <target name="phplint-source">
+        <phplint>
+            <fileset dir="src">
+                <include name="**/*.php" />
+            </fileset>
+        </phplint>
+    </target>
+
+    <target name="phplint-test-source">
+        <phplint file="tests/bootstrap.php" />
+        <phplint>
+            <fileset dir="tests/src">
+                <include name="**/*.php" />
+            </fileset>
+        </phplint>
+    </target>
+
+    <target name="phpunit-summary">
+        <exec executable="vendor/bin/phpunit" checkreturn="true">
+            <arg value="--coverage-text" />
+        </exec>
+    </target>
+
+    <target name="run-test">
+        <phingcall target="composer-install-dev" />
+        <phingcall target="phplint-source" />
+        <phingcall target="phplint-test-source" />
+        <phingcall target="phpunit-summary" />
+    </target>
+</project>

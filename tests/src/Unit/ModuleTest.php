@@ -24,8 +24,8 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
      * Make sure module config can be serialized, because if not,
      * this breaks the application when zf2's config cache is enabled.
      *
-     * @covers \FinalGene\RestResourceAuthenicationModule\Module::getConfig()
-     * @uses \FinalGene\RestResourceAuthenicationModule\Module::loadConfig()
+     * @covers \FinalGene\RestResourceAuthenticationModule\Module::getConfig()
+     * @uses \FinalGene\RestResourceAuthenticationModule\Module::loadConfig()
      */
     public function testModuleConfigIsSerializable()
     {
@@ -39,7 +39,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \FinalGene\RestResourceAuthenicationModule\Module::getModuleDependencies()
+     * @covers \FinalGene\RestResourceAuthenticationModule\Module::getModuleDependencies()
      */
     public function testModuleDependencies()
     {
@@ -53,7 +53,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \FinalGene\RestResourceAuthenicationModule\Module::loadConfig()
+     * @covers \FinalGene\RestResourceAuthenticationModule\Module::loadConfig()
      * @expectedException \InvalidArgumentException
      */
     public function testLoadConfigThrowException()
@@ -65,7 +65,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \FinalGene\RestResourceAuthenicationModule\Module::loadConfig()
+     * @covers \FinalGene\RestResourceAuthenticationModule\Module::loadConfig()
      */
     public function testLoadConfigReturnConfigArray()
     {

@@ -65,6 +65,7 @@ class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService::authenticate
+     * @uses FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException
      * @expectedException \FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException
      */
     public function testAuthenticationWillThrowException()

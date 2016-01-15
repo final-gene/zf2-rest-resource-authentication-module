@@ -23,10 +23,10 @@ use ZF\Rest\ResourceEvent;
 class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException::setAuthenticationMessages
-     * @covers FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException::getAuthenticationMessages
+     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::setAuthenticationService
+     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::getAuthenticationService
      */
-    public function testSetAndGetAuthenticationMessages()
+    public function testSetAndGetAuthenticationService()
     {
         $listener = $this->getMockForAbstractClass(AuthenticatedResourceListener::class);
         /** @var AuthenticatedResourceListener $listener */
@@ -39,7 +39,7 @@ class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException::attach
+     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::attach
      */
     public function testAttach()
     {
@@ -68,7 +68,7 @@ class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException::authenticate
+     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::authenticate
      */
     public function testSuccessfulAuthentication()
     {
@@ -102,7 +102,7 @@ class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException::authenticate
+     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::authenticate
      */
     public function testAuthenticationReturnApiProblem()
     {

@@ -8,8 +8,9 @@
 
 namespace FinalGene\RestResourceAuthenticationModule;
 
-use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
 use FinalGene\RestResourceAuthenticationModule\ServiceManager\AuthenticationServiceInitializer;
+use FinalGene\RestResourceAuthenticationModule\Http\Request;
+use FinalGene\RestResourceAuthenticationModule\Http\RequestFactory;
 
 return [
     'service_manager' => [
@@ -17,9 +18,9 @@ return [
             'AuthenticationServiceInitializer' => AuthenticationServiceInitializer::class,
         ],
         'invokables' => [
-            AuthenticationService::class => AuthenticationService::class,
         ],
         'factories' => [
+            Request::class => RequestFactory::class,
         ],
     ],
 ];

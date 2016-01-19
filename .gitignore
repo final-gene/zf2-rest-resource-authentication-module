@@ -1,4 +1,7 @@
 .idea/workspace.xml
 .idea/phing.xml
 .idea/dictionaries
+.idea/composerJson.xml
+.idea/inspectionProfiles
+.idea/scopes
 vendor/

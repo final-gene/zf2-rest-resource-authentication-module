@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="doctrine-module" default="build-info">
+<project name="rest-resource-authentication-module" default="build-info">
     <target name="build-info">
         <echo message="Please specify one of the following build targets" />
         <echo message="" />

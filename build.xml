@@ -37,8 +37,9 @@
     </target>
 
     <target name="phpunit-summary">
-        <exec executable="vendor/bin/phpunit" checkreturn="true">
+        <exec executable="vendor/bin/phpunit" checkreturn="true" logoutput="true">
             <arg value="--coverage-text" />
+            <arg value="--colors=never" />
         </exec>
     </target>
 

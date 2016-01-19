@@ -48,6 +48,19 @@ abstract class AbstractHeaderAuthenticationAdapter implements AdapterInterface
      */
     public function authenticate()
     {
-        return new Result(Result::FAILURE_UNCATEGORIZED, null, ['No authentication implemented']);
+        return $this->buildErrorResult('No authentication implemented', Result::FAILURE_UNCATEGORIZED);
+    }
+
+    /**
+     * Build error result object
+     *
+     * @param $message
+     * @param int $code
+     *
+     * @return Result
+     */
+    protected function buildErrorResult($message, $code = Result::FAILURE)
+    {
+        return new Result($code, null, [$message]);
     }
 }

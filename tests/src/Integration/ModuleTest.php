@@ -40,7 +40,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test if the module can be loaded
+     * TokenHeaderAuthenticationAdapterTest if the module can be loaded
      */
     public function testModuleIsLoadable()
     {

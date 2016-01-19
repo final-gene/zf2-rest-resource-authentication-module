@@ -2,9 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.2.0] - 2016-01-19
+## [1.3.0] - 2016-01-19
 ### Added
-- Token header authentication adapter
+- Permission validation
+  - Interfaces and handlers to validate permissions based on an identity
 
 ### Changed 
 - Nothing
@@ -20,6 +21,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Security
 - Nothing
+
+## [1.2.0] - 2016-01-19
+### Added
+- Token header authentication adapter
 
 ## [1.1.0] - 2016-01-16
 ### Added

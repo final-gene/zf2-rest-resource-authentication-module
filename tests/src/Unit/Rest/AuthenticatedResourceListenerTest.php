@@ -8,7 +8,9 @@
 
 namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Rest;
 
+use FinalGene\RestResourceAuthenticationModule\Authentication\IdentityInterface;
 use FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException;
+use FinalGene\RestResourceAuthenticationModule\Exception\PermissionException;
 use FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener;
 use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
 use Zend\EventManager\EventManagerInterface;
@@ -72,11 +74,13 @@ class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testSuccessfulAuthentication()
     {
+        $identity = $this->getMock(IdentityInterface::class);
+
         $service = $this->getMock(AuthenticationService::class, [], [], '', false);
         $service
             ->expects($this->once())
             ->method('authenticate')
-            ->willReturn(null);
+            ->willReturn($identity);
 
         $event = $this->getMock(ResourceEvent::class, [], [], '', false);
         /** @var ResourceEvent $event */
@@ -98,13 +102,13 @@ class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
             ->willReturn($service);
         /** @var AuthenticatedResourceListener $listener */
 
-        $this->assertNull($listener->authenticate($event));
+        $this->assertInstanceOf(IdentityInterface::class, $listener->authenticate($event));
     }
 
     /**
      * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::authenticate
      */
-    public function testAuthenticationReturnApiProblem()
+    public function testAuthenticationFetchingAuthenticationException()
     {
         $exception = $this->getMock(AuthenticationException::class);
         $exception
@@ -121,6 +125,50 @@ class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
 
         $event = $this->getMock(ResourceEvent::class, [], [], '', false);
         /** @var ResourceEvent $event */
+
+        $listener = $this->getMockForAbstractClass(
+            AuthenticatedResourceListener::class,
+            [],
+            '',
+            false,
+            false,
+            false,
+            [
+                'getAuthenticationService'
+            ]
+        );
+        $listener
+            ->expects($this->once())
+            ->method('getAuthenticationService')
+            ->willReturn($service);
+        /** @var AuthenticatedResourceListener $listener */
+
+        $this->assertInstanceOf(ApiProblemResponse::class, $listener->authenticate($event));
+    }
+
+    /**
+     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::authenticate
+     */
+    public function testAuthenticationFetchingPermissionException()
+    {
+        $exception = $this->getMock(PermissionException::class);
+        /** @var PermissionException $exception */
+
+        $event = $this->getMock(ResourceEvent::class, [], [], '', false);
+        /** @var ResourceEvent $event */
+
+        $identity = $this->getMock(IdentityInterface::class);
+        $identity
+            ->expects($this->once())
+            ->method('checkPermission')
+            ->with($event)
+            ->willThrowException($exception);
+
+        $service = $this->getMock(AuthenticationService::class, [], [], '', false);
+        $service
+            ->expects($this->once())
+            ->method('authenticate')
+            ->willReturn($identity);
 
         $listener = $this->getMockForAbstractClass(
             AuthenticatedResourceListener::class,

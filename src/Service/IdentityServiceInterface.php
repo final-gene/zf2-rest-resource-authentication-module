@@ -8,6 +8,8 @@
 
 namespace FinalGene\RestResourceAuthenticationModule\Service;
 
+use FinalGene\RestResourceAuthenticationModule\Authentication\IdentityInterface;
+
 /**
  * Class IdentityServiceInterface
  *
@@ -16,11 +18,11 @@ namespace FinalGene\RestResourceAuthenticationModule\Service;
 interface IdentityServiceInterface
 {
     /**
-     * Get secret from identity
+     * Get identity
      *
      * @param string $public Public information to find identity
      *
-     * @return string
+     * @return IdentityInterface
      */
-    public function getSecret($public);
+    public function getIdentity($public);
 }

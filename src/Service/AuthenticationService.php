@@ -10,6 +10,7 @@ namespace FinalGene\RestResourceAuthenticationModule\Service;
 
 use FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException;
 use Zend\Authentication\Adapter\AdapterInterface;
+use ZF\MvcAuth\Identity\IdentityInterface;
 
 /**
  * Class AuthenticationService
@@ -44,7 +45,7 @@ class AuthenticationService
     }
 
     /**
-     * @return object|null
+     * @return IdentityInterface|null
      * @throws AuthenticationException
      */
     public function authenticate()
@@ -61,6 +62,6 @@ class AuthenticationService
             throw $authException;
         }
 
-        return null;
+        return $result->getIdentity();
     }
 }

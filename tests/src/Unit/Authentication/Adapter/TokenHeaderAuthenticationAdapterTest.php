@@ -9,6 +9,7 @@
 namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Authentication\Adapter;
 
 use FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter;
+use FinalGene\RestResourceAuthenticationModule\Authentication\IdentityInterface;
 use FinalGene\RestResourceAuthenticationModule\Exception\IdentityNotFoundException;
 use FinalGene\RestResourceAuthenticationModule\Exception\TokenException;
 use FinalGene\RestResourceAuthenticationModule\Service\IdentityServiceInterface;
@@ -183,12 +184,18 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
             ->with('Authorization')
             ->willReturn($header);
 
+        $identity = $this->getMock(IdentityInterface::class);
+        $identity
+            ->expects($this->once())
+            ->method('getSecret')
+            ->willReturn(self::SECRET_STRING);
+
         $identityService = $this->getMock(IdentityServiceInterface::class);
         $identityService
             ->expects($this->once())
-            ->method('getSecret')
+            ->method('getIdentity')
             ->with(self::PUBLIC_STRING)
-            ->willReturn(self::SECRET_STRING);
+            ->willReturn($identity);
 
         $request = $this->getMock(
             Request::class,
@@ -243,6 +250,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $result = $adapter->authenticate();
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertEquals($identity, $result->getIdentity());
     }
 
     /**
@@ -523,7 +531,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $identityService = $this->getMock(IdentityServiceInterface::class);
         $identityService
             ->expects($this->once())
-            ->method('getSecret')
+            ->method('getIdentity')
             ->willThrowException(new IdentityNotFoundException());
 
         $adapter = $this->getMock(
@@ -584,12 +592,112 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
             ->with('Authorization')
             ->willReturn($header);
 
+        $identity = $this->getMock(IdentityInterface::class);
+        $identity
+            ->expects($this->once())
+            ->method('getSecret')
+            ->willReturn(self::SECRET_STRING);
+
         $identityService = $this->getMock(IdentityServiceInterface::class);
         $identityService
             ->expects($this->once())
-            ->method('getSecret')
+            ->method('getIdentity')
             ->with(self::PUBLIC_STRING)
+            ->willReturn($identity);
+
+        $request = $this->getMock(
+            Request::class,
+            [
+                'getHeaders',
+            ],
+            [],
+            '',
+            false
+        );
+        $request
+            ->expects($this->any())
+            ->method('getHeaders')
+            ->willReturn($headers);
+        /** @var Request $request */
+
+        $adapter = $this->getMock(
+            TokenHeaderAuthenticationAdapter::class,
+            [
+                'getRequest',
+                'extractPublicKey',
+                'extractSignature',
+                'getIdentityService',
+                'getHmac',
+            ]
+        );
+        $adapter
+            ->expects($this->once())
+            ->method('getRequest')
+            ->willReturn($request);
+        $adapter
+            ->expects($this->once())
+            ->method('extractPublicKey')
+            ->with($authorization)
+            ->willReturn(self::PUBLIC_STRING);
+        $adapter
+            ->expects($this->once())
+            ->method('extractSignature')
+            ->with($authorization)
+            ->willReturn(self::SIGNATURE_STRING);
+        $adapter
+            ->expects($this->once())
+            ->method('getIdentityService')
+            ->willReturn($identityService);
+        $adapter
+            ->expects($this->once())
+            ->method('getHmac')
+            ->with($request, self::SECRET_STRING)
+            ->willReturn('invalid-signature');
+        /** @var TokenHeaderAuthenticationAdapter $adapter */
+
+        $result = $adapter->authenticate();
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
+    }
+
+    /**
+     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
+     * @uses FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     */
+    public function testAuthenticationWithMissMatchingSignatureInDebugMode()
+    {
+        $authorization = 'Token ' . self::PUBLIC_STRING . ':' . self::SIGNATURE_STRING;
+
+        $header = $this->getMock(HeaderInterface::class);
+        $header
+            ->expects($this->once())
+            ->method('getFieldValue')
+            ->willReturn($authorization);
+
+        $headers = $this->getMock(Headers::class);
+        $headers
+            ->expects($this->any())
+            ->method('has')
+            ->withConsecutive(['Authorization'], ['XDEBUG_SESSION_START'])
+            ->willReturnOnConsecutiveCalls(true, true);
+        $headers
+            ->expects($this->once())
+            ->method('get')
+            ->with('Authorization')
+            ->willReturn($header);
+
+        $identity = $this->getMock(IdentityInterface::class);
+        $identity
+            ->expects($this->once())
+            ->method('getSecret')
             ->willReturn(self::SECRET_STRING);
+
+        $identityService = $this->getMock(IdentityServiceInterface::class);
+        $identityService
+            ->expects($this->once())
+            ->method('getIdentity')
+            ->with(self::PUBLIC_STRING)
+            ->willReturn($identity);
 
         $request = $this->getMock(
             Request::class,

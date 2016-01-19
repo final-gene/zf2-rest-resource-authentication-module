@@ -8,6 +8,7 @@
 
 namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Service;
 
+use FinalGene\RestResourceAuthenticationModule\Authentication\IdentityInterface;
 use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
 use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
@@ -39,11 +40,17 @@ class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testSuccessfulAuthentication()
     {
+        $identity = $this->getMock(IdentityInterface::class);
+
         $result = $this->getMock(Result::class, [], [], '', false);
         $result
             ->expects($this->once())
             ->method('isValid')
             ->willReturn(true);
+        $result
+            ->expects($this->once())
+            ->method('getIdentity')
+            ->willReturn($identity);
         /** @var Result $result */
 
         $adapter = $this->getMock(AdapterInterface::class, [], [], '', false);
@@ -60,7 +67,7 @@ class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($adapter);
         /** @var AuthenticationService $service */
 
-        $this->assertNull($service->authenticate());
+        $this->assertInstanceOf(IdentityInterface::class, $service->authenticate());
     }
 
     /**

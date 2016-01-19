@@ -69,7 +69,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
         try {
             $publicKey = $this->extractPublicKey($authorization);
             $signature = $this->extractSignature($authorization);
-            $secret = $this->getIdentityService()->getSecret($publicKey);
+            $identity = $this->getIdentityService()->getIdentity($publicKey);
 
         } catch (TokenException $e) {
             return $this->buildErrorResult($e->getMessage(), $e->getCode());
@@ -78,7 +78,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
             return $this->buildErrorResult($e->getMessage(), Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
-        $hmac = $this->getHmac($request, $secret);
+        $hmac = $this->getHmac($request, $identity->getSecret());
         if ($hmac !== $signature) {
             if ($header->has('XDEBUG_SESSION_START')) {
                 error_log(sprintf('Signature for identity `%s`: %s', $publicKey, $hmac));
@@ -86,7 +86,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
             return $this->buildErrorResult('Signature does not match', Result::FAILURE_CREDENTIAL_INVALID);
         }
 
-        return new Result(Result::SUCCESS, null);
+        return new Result(Result::SUCCESS, $identity);
     }
 
     /**

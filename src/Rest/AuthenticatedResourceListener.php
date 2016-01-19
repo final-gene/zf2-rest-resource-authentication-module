@@ -8,7 +8,9 @@
 
 namespace FinalGene\RestResourceAuthenticationModule\Rest;
 
+use FinalGene\RestResourceAuthenticationModule\Authentication\IdentityInterface;
 use FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException;
+use FinalGene\RestResourceAuthenticationModule\Exception\PermissionException;
 use Zend\EventManager\EventManagerInterface;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
@@ -77,7 +79,11 @@ abstract class AuthenticatedResourceListener extends AbstractResourceListener
     public function authenticate(ResourceEvent $event)
     {
         try {
-            return $this->getAuthenticationService()->authenticate();
+            $identity = $this->getAuthenticationService()->authenticate();
+            if ($identity instanceof IdentityInterface) {
+                $identity->checkPermission($event);
+            }
+            return $identity;
 
         } catch (AuthenticationException $e) {
             return new ApiProblemResponse(
@@ -86,6 +92,9 @@ abstract class AuthenticatedResourceListener extends AbstractResourceListener
                     sprintf('%s (%s)', $e->getMessage(), implode(', ', $e->getAuthenticationMessages()))
                 )
             );
+
+        } catch (PermissionException $e) {
+            return new ApiProblemResponse(new ApiProblem(400, $e->getMessage()));
         }
     }
 }

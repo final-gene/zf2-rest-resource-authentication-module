@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2185ebd7e0b1f1f0936becf998a3837c",
-    "content-hash": "1b9898b3a09f0dc4206210e7939fe020",
+    "hash": "5422eb84193b8f444aca6a013bc53836",
+    "content-hash": "8079cbaa6be4b33f49324e15b687bd77",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -82,6 +82,51 @@
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
             "time": "2014-12-30 15:22:37"
+        },
+        {
+            "name": "final-gene/phing-commons",
+            "version": "2.2.0",
+            "source": {
+                "type": "git",
+                "url": "git@gitlab.devel.final-gene.de:final-gene/phing-commons.git",
+                "reference": "eaafebab37509c81b638a47a30c5b12f33b75510"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://satis.final-gene.de/dist/final-gene-phing-commons-2.2.0-ade11e.zip",
+                "reference": "eaafebab37509c81b638a47a30c5b12f33b75510",
+                "shasum": "89240660c262b2f04c0d08c2a6f57c7370b9ae46"
+            },
+            "require": {
+                "phing/phing": "^2.9",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Evolver\\Phing\\": "src"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Frank Giesecke",
+                    "email": "frank.giesecke@final-gene.de"
+                }
+            ],
+            "description": "Common phing targets",
+            "homepage": "https://gitlab.devel.final-gene.de/final-gene/phing-commons",
+            "keywords": [
+                "deployment",
+                "final gene",
+                "phing"
+            ],
+            "time": "2016-01-20 16:47:06"
         },
         {
             "name": "jeremykendall/php-domain-parser",
@@ -209,6 +254,96 @@
                 "ws"
             ],
             "time": "2015-11-03 07:54:30"
+        },
+        {
+            "name": "phing/phing",
+            "version": "2.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phingofficial/phing.git",
+                "reference": "a5b10a50160c8a4744545aacb33ef158349e655c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phingofficial/phing/zipball/a5b10a50160c8a4744545aacb33ef158349e655c",
+                "reference": "a5b10a50160c8a4744545aacb33ef158349e655c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "require-dev": {
+                "ext-pdo_sqlite": "*",
+                "lastcraft/simpletest": "@dev",
+                "pdepend/pdepend": "2.x",
+                "pear/archive_tar": "1.4.x",
+                "pear/http_request2": "dev-trunk",
+                "pear/net_growl": "dev-trunk",
+                "pear/pear-core-minimal": "1.10.1",
+                "pear/versioncontrol_git": "@dev",
+                "pear/versioncontrol_svn": "~0.5",
+                "phpdocumentor/phpdocumentor": "2.x",
+                "phploc/phploc": "~2.0.6",
+                "phpmd/phpmd": "~2.2",
+                "phpunit/phpunit": ">=3.7",
+                "sebastian/git": "~1.0",
+                "sebastian/phpcpd": "2.x",
+                "squizlabs/php_codesniffer": "~2.2",
+                "symfony/yaml": "~2.7"
+            },
+            "suggest": {
+                "pdepend/pdepend": "PHP version of JDepend",
+                "pear/archive_tar": "Tar file management class",
+                "pear/versioncontrol_git": "A library that provides OO interface to handle Git repository",
+                "pear/versioncontrol_svn": "A simple OO-style interface for Subversion, the free/open-source version control system",
+                "phpdocumentor/phpdocumentor": "Documentation Generator for PHP",
+                "phploc/phploc": "A tool for quickly measuring the size of a PHP project",
+                "phpmd/phpmd": "PHP version of PMD tool",
+                "phpunit/php-code-coverage": "Library that provides collection, processing, and rendering functionality for PHP code coverage information",
+                "phpunit/phpunit": "The PHP Unit Testing Framework",
+                "sebastian/phpcpd": "Copy/Paste Detector (CPD) for PHP code",
+                "tedivm/jshrink": "Javascript Minifier built in PHP"
+            },
+            "bin": [
+                "bin/phing"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.13.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "classes/phing/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "classes"
+            ],
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Michiel Rook",
+                    "email": "mrook@php.net"
+                },
+                {
+                    "name": "Phing Community",
+                    "homepage": "https://www.phing.info/trac/wiki/Development/Contributors"
+                }
+            ],
+            "description": "PHing Is Not GNU make; it's a PHP project build system or build tool based on Apache Ant.",
+            "homepage": "https://www.phing.info/",
+            "keywords": [
+                "build",
+                "phing",
+                "task",
+                "tool"
+            ],
+            "time": "2015-12-04 09:45:44"
         },
         {
             "name": "psr/http-message",
@@ -1263,16 +1398,16 @@
         },
         {
             "name": "zendframework/zend-servicemanager",
-            "version": "2.7.3",
+            "version": "2.7.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-servicemanager.git",
-                "reference": "cc65a0a1081bf8e76c7420290fb7a55880236786"
+                "reference": "846f8a4f9c2e438e45d2de5cec11509cb7e08d79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/cc65a0a1081bf8e76c7420290fb7a55880236786",
-                "reference": "cc65a0a1081bf8e76c7420290fb7a55880236786",
+                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/846f8a4f9c2e438e45d2de5cec11509cb7e08d79",
+                "reference": "846f8a4f9c2e438e45d2de5cec11509cb7e08d79",
                 "shasum": ""
             },
             "require": {
@@ -1311,7 +1446,7 @@
                 "servicemanager",
                 "zf2"
             ],
-            "time": "2016-01-13 19:29:06"
+            "time": "2016-01-19 21:01:21"
         },
         {
             "name": "zendframework/zend-stdlib",
@@ -1486,20 +1621,20 @@
         },
         {
             "name": "zendframework/zend-view",
-            "version": "2.5.2",
+            "version": "2.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-view.git",
-                "reference": "b3d31e7ba6d0c13a76afe5c8d914a8ff08616b0d"
+                "reference": "f1b682652045b126e0eb0852a1c9fb76b21dfcdd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-view/zipball/b3d31e7ba6d0c13a76afe5c8d914a8ff08616b0d",
-                "reference": "b3d31e7ba6d0c13a76afe5c8d914a8ff08616b0d",
+                "url": "https://api.github.com/repos/zendframework/zend-view/zipball/f1b682652045b126e0eb0852a1c9fb76b21dfcdd",
+                "reference": "f1b682652045b126e0eb0852a1c9fb76b21dfcdd",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5",
+                "php": "^5.5 || ^7.0",
                 "zendframework/zend-eventmanager": "~2.5",
                 "zendframework/zend-loader": "~2.5",
                 "zendframework/zend-stdlib": "~2.5"
@@ -1565,7 +1700,7 @@
                 "view",
                 "zf2"
             ],
-            "time": "2015-06-16 15:32:26"
+            "time": "2016-01-19 20:49:13"
         },
         {
             "name": "zfcampus/zf-api-problem",

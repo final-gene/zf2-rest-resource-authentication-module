@@ -41,13 +41,6 @@
 
     <target name="run-analyze">
         <phingcall target="phpunit-analyze" />
-
-        <delete includeemptydirs="true">
-            <fileset dir="${project.build.path}">
-                <include name="vendor/**"/>
-            </fileset>
-        </delete>
-
         <phingcall target="sonar-scanner" />
     </target>
 </project>

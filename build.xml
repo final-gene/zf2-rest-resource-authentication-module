@@ -34,14 +34,12 @@
     </target>
 
     <target name="run-test">
-        <phingcall target="composer-install-dev" />
         <phingcall target="phplint-source" />
         <phingcall target="phplint-test-source" />
         <phingcall target="phpunit-summary" />
     </target>
 
     <target name="run-analyze">
-        <phingcall target="composer-install-dev" />
         <phingcall target="phpunit-analyze" />
 
         <delete includeemptydirs="true">

@@ -1,9 +1,19 @@
 types:
   - test
+  - analyze
 
 job_unit_test:
   type: test
   tags:
     - phpunit
   script:
+    - composer install
     - phing run-test
+
+job_sonar_analyze:
+  type: analyze
+  tags:
+    - sonar-php
+  script:
+    - composer install
+    - phing run-analyze

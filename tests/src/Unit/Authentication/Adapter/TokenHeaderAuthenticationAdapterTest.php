@@ -52,17 +52,21 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $header = $this->getMock(HeaderInterface::class);
 
-        $headers = $this->getMock(Headers::class);
+        $headers = $this->getMock(
+            Headers::class,
+            [
+                'clearHeaders',
+            ]
+        );
         $headers
             ->expects($this->once())
-            ->method('removeHeader')
-            ->with($header);
+            ->method('clearHeaders');
 
         $request = $this->getMock(
             Request::class,
             [
                 'getHeaders',
-                'getHeader',
+                'setHeaders',
                 'toString',
             ],
             [],
@@ -75,9 +79,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
             ->willReturn($headers);
         $request
             ->expects($this->once())
-            ->method('getHeader')
-            ->with('Authorization')
-            ->willReturn($header);
+            ->method('setHeaders')
+            ->with($headers);
         $request
             ->expects($this->once())
             ->method('toString')

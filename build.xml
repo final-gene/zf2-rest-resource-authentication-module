@@ -13,7 +13,8 @@
     <target name="build-info">
         <echo message="Please specify one of the following build targets" />
         <echo message="" />
-        <echo message="    run-test: run test scripts to validate the code" />
+        <echo message="    run-test:    run test scripts to validate the code" />
+        <echo message="    run-analyze: run code analyze scripts and populate the result @ sonarqube" />
     </target>
 
     <target name="phplint-source">
@@ -36,11 +37,10 @@
     <target name="run-test">
         <phingcall target="phplint-source" />
         <phingcall target="phplint-test-source" />
-        <phingcall target="phpunit-summary" />
+        <phingcall target="phpunit-analyze" />
     </target>
 
     <target name="run-analyze">
-        <phingcall target="phpunit-analyze" />
         <phingcall target="sonar-scanner" />
     </target>
 </project>

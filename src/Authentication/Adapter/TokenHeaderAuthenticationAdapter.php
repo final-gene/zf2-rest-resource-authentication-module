@@ -153,6 +153,6 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
         $requestCopy = clone $request;
         $requestCopy->setHeaders($headerCopy);
 
-        return hash_hmac('sha256', $request->toString(), $secret);
+        return hash_hmac('sha256', $requestCopy->toString(), $secret);
     }
 }

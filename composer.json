@@ -24,7 +24,7 @@
         "zfcampus/zf-api-problem": "^1.1",
         "zfcampus/zf-rest": "^1.2",
         "league/uri": "^4.0",
-        "final-gene/phing-commons": "^2.2"
+        "final-gene/phing-commons": "^3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8",

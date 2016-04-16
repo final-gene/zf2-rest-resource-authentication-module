@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5422eb84193b8f444aca6a013bc53836",
-    "content-hash": "8079cbaa6be4b33f49324e15b687bd77",
+    "hash": "e6e61fba17801ee27555b73188b3c3d8",
+    "content-hash": "a6eafeef616516e4521d54c7659f7103",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -85,17 +85,17 @@
         },
         {
             "name": "final-gene/phing-commons",
-            "version": "2.2.0",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "git@gitlab.devel.final-gene.de:final-gene/phing-commons.git",
-                "reference": "eaafebab37509c81b638a47a30c5b12f33b75510"
+                "reference": "e7b9e364ad88efd3d686e677574b413f117967d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://satis.final-gene.de/dist/final-gene-phing-commons-2.2.0-ade11e.zip",
-                "reference": "eaafebab37509c81b638a47a30c5b12f33b75510",
-                "shasum": "89240660c262b2f04c0d08c2a6f57c7370b9ae46"
+                "url": "https://satis.final-gene.de/dist/final-gene-phing-commons-3.0.0-86368b.zip",
+                "reference": "e7b9e364ad88efd3d686e677574b413f117967d7",
+                "shasum": "d617c16aabbd5325b4b381122481491a5efb8276"
             },
             "require": {
                 "phing/phing": "^2.9",
@@ -126,7 +126,7 @@
                 "final gene",
                 "phing"
             ],
-            "time": "2016-01-20 16:47:06"
+            "time": "2016-04-06 20:40:56"
         },
         {
             "name": "jeremykendall/php-domain-parser",
@@ -257,16 +257,16 @@
         },
         {
             "name": "phing/phing",
-            "version": "2.13.0",
+            "version": "2.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phingofficial/phing.git",
-                "reference": "a5b10a50160c8a4744545aacb33ef158349e655c"
+                "reference": "7dd73c83c377623def54b58121f46b4dcb35dd61"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phingofficial/phing/zipball/a5b10a50160c8a4744545aacb33ef158349e655c",
-                "reference": "a5b10a50160c8a4744545aacb33ef158349e655c",
+                "url": "https://api.github.com/repos/phingofficial/phing/zipball/7dd73c83c377623def54b58121f46b4dcb35dd61",
+                "reference": "7dd73c83c377623def54b58121f46b4dcb35dd61",
                 "shasum": ""
             },
             "require": {
@@ -275,6 +275,7 @@
             "require-dev": {
                 "ext-pdo_sqlite": "*",
                 "lastcraft/simpletest": "@dev",
+                "mikey179/vfsstream": "^1.6",
                 "pdepend/pdepend": "2.x",
                 "pear/archive_tar": "1.4.x",
                 "pear/http_request2": "dev-trunk",
@@ -310,7 +311,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.13.x-dev"
+                    "dev-master": "2.14.x-dev"
                 }
             },
             "autoload": {
@@ -343,7 +344,7 @@
                 "task",
                 "tool"
             ],
-            "time": "2015-12-04 09:45:44"
+            "time": "2016-03-10 21:39:23"
         },
         {
             "name": "psr/http-message",

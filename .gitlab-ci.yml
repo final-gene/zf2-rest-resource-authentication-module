@@ -2,18 +2,26 @@ types:
   - test
   - analyze
 
-job_unit_test:
-  type: test
-  tags:
-    - phpunit
-  script:
-    - composer install
-    - phing run-test
+test:php-unit:
+    type: test
+    tags:
+        - phpunit
+    script:
+        - composer install
+        - phing run-test
+    artifacts:
+        paths:
+            - tests/.report/**
 
-job_sonar_analyze:
-  type: analyze
-  tags:
-    - sonar-php
-  script:
-    - composer install
-    - phing run-analyze
+analyze:sonar:
+    type: analyze
+    tags:
+        - sonar-php
+    script:
+        - composer install
+        - phing run-analyze
+    dependencies:
+        - test:php-unit
+    cache:
+        paths:
+            - tests/.report/**

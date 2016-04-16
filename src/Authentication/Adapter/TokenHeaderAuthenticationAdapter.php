@@ -146,8 +146,13 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      */
     protected function getHmac(Request $request, $secret)
     {
-        // Remove authorizatin header to build valid signature
-        $request->getHeaders()->removeHeader($request->getHeader(self::AUTH_HEADER));
+        // Remove headers to build valid signature
+        $headerCopy = clone $request->getHeaders();
+        $headerCopy->clearHeaders();
+
+        $requestCopy = clone $request;
+        $requestCopy->setHeaders($headerCopy);
+
         return hash_hmac('sha256', $request->toString(), $secret);
     }
 }

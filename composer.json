@@ -7,7 +7,7 @@
     "repositories": [
         {
             "type": "composer",
-            "url": "http://satis.final-gene.de"
+            "url": "https://satis.final-gene.de"
         }
     ],
     "authors": [

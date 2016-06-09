@@ -752,6 +752,10 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
             ->willReturn('invalid-signature');
         /** @var TokenHeaderAuthenticationAdapter $adapter */
 
+        $this->setExpectedException('PHPUnit_Framework_Error_Notice');
+        $adapter->authenticate();
+
+        PHPUnit_Framework_Error_Notice::$enabled = false;
         $result = $adapter->authenticate();
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());

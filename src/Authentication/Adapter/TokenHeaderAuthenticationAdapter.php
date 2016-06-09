@@ -81,7 +81,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
         $hmac = $this->getHmac($request, $identity->getSecret());
         if ($hmac !== $signature) {
             if ($header->has('XDEBUG_SESSION_START')) {
-                error_log(sprintf('Signature for identity `%s`: %s', $publicKey, $hmac));
+                trigger_error(sprintf('Signature for identity `%s`: %s', $publicKey, $hmac), E_USER_NOTICE);
             }
             return $this->buildErrorResult('Signature does not match', Result::FAILURE_CREDENTIAL_INVALID);
         }

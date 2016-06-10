@@ -50,8 +50,6 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetHmac()
     {
-        $header = $this->getMock(HeaderInterface::class);
-
         $headers = $this->getMock(
             Headers::class,
             [
@@ -179,8 +177,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $headers
             ->expects($this->any())
             ->method('has')
-            ->withConsecutive(['Authorization'], ['XDEBUG_SESSION_START'])
-            ->willReturnOnConsecutiveCalls(true, false);
+            ->with('Authorization')
+            ->willReturn(true);
         $headers
             ->expects($this->once())
             ->method('get')
@@ -317,8 +315,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $headers
             ->expects($this->any())
             ->method('has')
-            ->withConsecutive(['Authorization'], ['XDEBUG_SESSION_START'])
-            ->willReturnOnConsecutiveCalls(true, false);
+            ->with('Authorization')
+            ->willReturn(true);
         $headers
             ->expects($this->once())
             ->method('get')
@@ -376,8 +374,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $headers
             ->expects($this->any())
             ->method('has')
-            ->withConsecutive(['Authorization'], ['XDEBUG_SESSION_START'])
-            ->willReturnOnConsecutiveCalls(true, false);
+            ->with('Authorization')
+            ->willReturn(true);
         $headers
             ->expects($this->once())
             ->method('get')
@@ -439,8 +437,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $headers
             ->expects($this->any())
             ->method('has')
-            ->withConsecutive(['Authorization'], ['XDEBUG_SESSION_START'])
-            ->willReturnOnConsecutiveCalls(true, false);
+            ->with('Authorization')
+            ->willReturn(true);
         $headers
             ->expects($this->once())
             ->method('get')
@@ -508,8 +506,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $headers
             ->expects($this->any())
             ->method('has')
-            ->withConsecutive(['Authorization'], ['XDEBUG_SESSION_START'])
-            ->willReturnOnConsecutiveCalls(true, false);
+            ->with('Authorization')
+            ->willReturn(true);
         $headers
             ->expects($this->once())
             ->method('get')
@@ -585,10 +583,10 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
 
         $headers = $this->getMock(Headers::class);
         $headers
-            ->expects($this->any())
+            ->expects($this->once())
             ->method('has')
-            ->withConsecutive(['Authorization'], ['XDEBUG_SESSION_START'])
-            ->willReturnOnConsecutiveCalls(true, false);
+            ->with('Authorization')
+            ->willReturn(true);
         $headers
             ->expects($this->once())
             ->method('get')
@@ -681,8 +679,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $headers
             ->expects($this->any())
             ->method('has')
-            ->withConsecutive(['Authorization'], ['XDEBUG_SESSION_START'])
-            ->willReturnOnConsecutiveCalls(true, true);
+            ->with('Authorization')
+            ->willReturn(true);
         $headers
             ->expects($this->once())
             ->method('get')
@@ -725,6 +723,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
                 'extractSignature',
                 'getIdentityService',
                 'getHmac',
+                'isDebugLogging',
             ]
         );
         $adapter
@@ -750,6 +749,10 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
             ->method('getHmac')
             ->with($request, self::SECRET_STRING)
             ->willReturn('invalid-signature');
+        $adapter
+            ->expects($this->once())
+            ->method('isDebugLogging')
+            ->willReturn(true);
         /** @var TokenHeaderAuthenticationAdapter $adapter */
 
         $this->setExpectedException('PHPUnit_Framework_Error_Notice');
@@ -759,5 +762,18 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $result = $adapter->authenticate();
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
+    }
+
+    /**
+     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::setDebugLogging
+     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::isDebugLogging
+     */
+    public function testSetAndGetDebugLogging()
+    {
+        $adapter = new TokenHeaderAuthenticationAdapter();
+        $this->assertFalse($adapter->isDebugLogging());
+
+        $adapter->setDebugLogging(true);
+        $this->assertTrue($adapter->isDebugLogging());
     }
 }

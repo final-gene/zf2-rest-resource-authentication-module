@@ -30,6 +30,11 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
     private $identityService;
 
     /**
+     * @var bool
+     */
+    private $debugLogging = false;
+
+    /**
      * Get $identityService
      *
      * @return IdentityServiceInterface
@@ -80,7 +85,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
 
         $hmac = $this->getHmac($request, $identity->getSecret());
         if ($hmac !== $signature) {
-            if ($header->has('XDEBUG_SESSION_START')) {
+            if ($this->isDebugLogging()) {
                 trigger_error(sprintf('Signature for identity `%s`: %s', $publicKey, $hmac), E_USER_NOTICE);
             }
             return $this->buildErrorResult('Signature does not match', Result::FAILURE_CREDENTIAL_INVALID);
@@ -154,5 +159,25 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
         $requestCopy->setHeaders($headerCopy);
 
         return hash_hmac('sha256', $requestCopy->toString(), $secret);
+    }
+
+    /**
+     * Is $debugLog
+     *
+     * @return boolean
+     */
+    public function isDebugLogging()
+    {
+        return $this->debugLogging;
+    }
+
+    /**
+     * @param boolean $debugLogging
+     * @return TokenHeaderAuthenticationAdapter
+     */
+    public function setDebugLogging($debugLogging)
+    {
+        $this->debugLogging = filter_var($debugLogging, FILTER_VALIDATE_BOOLEAN);
+        return $this;
     }
 }

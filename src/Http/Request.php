@@ -15,7 +15,7 @@ use Zend\Stdlib\Parameters;
 /**
  * Class Request
  *
- * @package Feitc\ShopApiModule\Http
+ * @package FinalGene\RestResourceAuthenticationModule\Http
  */
 class Request extends BaseRequest
 {

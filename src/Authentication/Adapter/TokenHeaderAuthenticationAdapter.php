@@ -12,6 +12,7 @@ use FinalGene\RestResourceAuthenticationModule\Exception\TokenException;
 use FinalGene\RestResourceAuthenticationModule\Exception\IdentityNotFoundException;
 use FinalGene\RestResourceAuthenticationModule\Service\IdentityServiceInterface;
 use Zend\Authentication\Result;
+use Zend\Http\Header\ContentType;
 use Zend\Http\Request;
 
 /**
@@ -158,6 +159,10 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
         $requestCopy = clone $request;
         $requestCopy->setHeaders($headerCopy);
 
+        if (Request::METHOD_POST === $request->getMethod()) {
+            $this->preparePostCopy($request, $requestCopy);
+        }
+
         return hash_hmac('sha256', $requestCopy->toString(), $secret);
     }
 
@@ -179,5 +184,42 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
     {
         $this->debugLogging = filter_var($debugLogging, FILTER_VALIDATE_BOOLEAN);
         return $this;
+    }
+
+    /**
+     * @param Request $request
+     * @param Request $requestCopy
+     */
+    protected function preparePostCopy(Request $request, Request $requestCopy)
+    {
+        $contentType = $request->getHeaders()->get('Content-Type');
+        if ($contentType instanceof ContentType
+            &&  'multipart/form-data' === $contentType->getMediaType()
+        ) {
+            $boundary = $contentType->getParameters()['boundary'];
+            $content = '';
+
+            // process post data
+            foreach ($request->getPost() as $name => $value) {
+                $content.= sprintf("--%s\r\n", $boundary);
+                $content.= sprintf("Content-Disposition: form-data; name=\"%s\"\r\n", $name);
+                if (!empty($value)) {
+                    $content.= sprintf("Content-Length: %d\r\n", strlen($value));
+                }
+                $content.= sprintf("\r\n%s\r\n", $value);
+            }
+
+            // process file data
+            foreach ($request->getFiles() as $name => $data) {
+                $content.= sprintf("--%s\r\n", $boundary);
+                $content.= sprintf("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n", $name, $data['name']);
+                $content.= sprintf("Content-Length: %d\r\n", $data['size']);
+                $content.= sprintf("Content-Type: %s\r\n", $data['type']);
+                $content.= sprintf("\r\n%s\r\n", file_get_contents($data['tmp_name']));
+            }
+
+            $content.= sprintf("--%s--\r\n", $boundary);
+            $requestCopy->setContent($content);
+        }
     }
 }

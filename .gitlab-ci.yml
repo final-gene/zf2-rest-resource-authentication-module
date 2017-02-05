@@ -2,12 +2,31 @@ types:
   - test
   - analyze
 
-test:php-unit:
+before_script:
+    - shopt -s expand_aliases
+    - echo 'set alias for PHP'; [[ `which php7.0 > /dev/null` || $? == 0 ]] && alias php='php7.0' || echo 'Runner does not support PHP 7.0'
+    - php --version
+    - composer validate --no-check-all --no-check-publish
+
+test:php-unit:5.6:
     type: test
     tags:
+        - php5.6
         - phpunit
     script:
-        - composer install
+        - shopt -s expand_aliases
+        - which php5 > /dev/null; [[ $? == 0 ]] && alias php='php5' || echo 'Runner does not support PHP 5.6'
+        - php --version
+        - composer install --no-interaction
+        - phing run-test
+
+test:php-unit:7.0:
+    type: test
+    tags:
+        - php7.0
+        - phpunit
+    script:
+        - composer install --no-interaction
         - phing run-test
     artifacts:
         paths:
@@ -16,12 +35,10 @@ test:php-unit:
 analyze:sonar:
     type: analyze
     tags:
+        - php7.0
         - sonar-php
     script:
-        - composer install
+        - composer install --no-interaction
         - phing run-analyze
     dependencies:
-        - test:php-unit
-    cache:
-        paths:
-            - tests/.report/**
+        - test:php-unit:7.0

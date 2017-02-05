@@ -3,31 +3,40 @@ types:
   - analyze
 
 before_script:
+    # force php 7.0
     - shopt -s expand_aliases
     - echo 'set alias for PHP'; [[ `which php7.0 > /dev/null` || $? == 0 ]] && alias php='php7.0' || echo 'Runner does not support PHP 7.0'
     - php --version
+    # validate composer
     - composer validate --no-check-all --no-check-publish
 
 test:php-unit:5.6:
     type: test
     tags:
         - php5.6
-        - phpunit
     script:
+        # force php 5.6
         - shopt -s expand_aliases
         - which php5 > /dev/null; [[ $? == 0 ]] && alias php='php5' || echo 'Runner does not support PHP 5.6'
         - php --version
+        # install dependencies
         - composer install --no-interaction
-        - phing run-test
+        # lint php files
+        - find . -name '*.php' -exec php -l {} \;
+        # run unit tests
+        - vendor/bin/phpunit --colors=never
 
 test:php-unit:7.0:
     type: test
     tags:
         - php7.0
-        - phpunit
     script:
+        # install dependencies
         - composer install --no-interaction
-        - phing run-test
+        # lint php files
+        - find . -name '*.php' -exec php -l {} \;
+        # run unit tests and fetch coverage
+        - vendor/bin/phpunit --coverage-clover .report/phpunit.coverage.xml --log-junit .report/phpunit.xml --coverage-text --colors=never
     artifacts:
         paths:
             - tests/.report/**
@@ -35,10 +44,9 @@ test:php-unit:7.0:
 analyze:sonar:
     type: analyze
     tags:
-        - php7.0
         - sonar-php
     script:
-        - composer install --no-interaction
-        - phing run-analyze
+        # run sonar analyze
+        - sonar-runner
     dependencies:
         - test:php-unit:7.0

@@ -31,6 +31,7 @@ test:php-unit:7.0:
     type: test
     tags:
         - php7.0
+        - php-xdebug
     script:
         # install dependencies
         - composer install --no-interaction

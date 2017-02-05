@@ -13,7 +13,9 @@ use FinalGene\RestResourceAuthenticationModule\Authentication\IdentityInterface;
 use FinalGene\RestResourceAuthenticationModule\Exception\IdentityNotFoundException;
 use FinalGene\RestResourceAuthenticationModule\Exception\TokenException;
 use FinalGene\RestResourceAuthenticationModule\Service\IdentityServiceInterface;
+use Prophecy\Argument;
 use Zend\Authentication\Result;
+use Zend\Http\Header\ContentType;
 use Zend\Http\Header\HeaderInterface;
 use Zend\Http\Headers;
 use Zend\Http\Request;
@@ -31,8 +33,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     const SIGNATURE_STRING = '147933218aaabc0b8b10a2b3a5c34684c8d94341bcf10a4736dc7270f7741851';
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::setIdentityService
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::getIdentityService
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::setIdentityService
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::getIdentityService
      */
     public function testSetAndGetIdentityService()
     {
@@ -45,10 +47,29 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedIdentityService, $adapter->getIdentityService());
     }
 
+    public function dataProviderForTestGetHmac()
+    {
+        return [
+            'Method GET' => [
+                Request::METHOD_GET,
+                $this->never(),
+            ],
+            'Method POST' => [
+                Request::METHOD_POST,
+                $this->once(),
+            ],
+            'Method PUT' => [
+                Request::METHOD_PUT,
+                $this->never(),
+            ],
+        ];
+    }
+
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::getHmac
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::getHmac
+     * @dataProvider dataProviderForTestGetHmac
      */
-    public function testGetHmac()
+    public function testGetHmac($method, $expectedCallOfPreparePostCopy)
     {
         $headers = $this->getMock(
             Headers::class,
@@ -66,6 +87,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
                 'getHeaders',
                 'setHeaders',
                 'toString',
+                'getMethod',
             ],
             [],
             '',
@@ -83,17 +105,27 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('toString')
             ->willReturn(self::REQUEST_STRING);
+        $request
+            ->expects($this->once())
+            ->method('getMethod')
+            ->willReturn($method);
         /** @var Request $request */
 
+        $adapter = $this->getMock(TokenHeaderAuthenticationAdapter::class, [
+            'preparePostCopy',
+        ]);
+        $adapter
+            ->expects($expectedCallOfPreparePostCopy)
+            ->method('preparePostCopy');
+
         $getHmac = $this->getMethod('getHmac');
-        $adapter = new TokenHeaderAuthenticationAdapter();
         $hmac = $getHmac->invokeArgs($adapter, [$request, self::SECRET_STRING]);
 
         $this->assertEquals(self::SIGNATURE_STRING, $hmac);
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::extractSignature
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::extractSignature
      */
     public function testExtractSignature()
     {
@@ -107,7 +139,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::extractSignature
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::extractSignature
      * @expectedException \FinalGene\RestResourceAuthenticationModule\Exception\TokenException
      */
     public function testExtractInvalidSignature()
@@ -120,7 +152,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::extractPublicKey
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::extractPublicKey
      */
     public function testExtractPublicKey()
     {
@@ -134,7 +166,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::extractPublicKey
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::extractPublicKey
      * @expectedException \FinalGene\RestResourceAuthenticationModule\Exception\TokenException
      */
     public function testExtractInvalidPublicKey()
@@ -160,8 +192,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
+     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
      */
     public function testSuccessfulAuthentication()
     {
@@ -255,8 +287,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
+     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
      */
     public function testAuthenticationWithoutAuthHeader()
     {
@@ -298,8 +330,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
+     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
      */
     public function testAuthenticationWithoutIdentifier()
     {
@@ -357,8 +389,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
+     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
      */
     public function testAuthenticationWithoutPublicKey()
     {
@@ -420,8 +452,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
+     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
      */
     public function testAuthenticationWithoutSignature()
     {
@@ -488,9 +520,9 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
-     * @uses FinalGene\RestResourceAuthenticationModule\Exception\IdentityNotFoundException
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
+     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     * @uses \FinalGene\RestResourceAuthenticationModule\Exception\IdentityNotFoundException
      */
     public function testAuthenticationWithoutValidIdentity()
     {
@@ -568,8 +600,9 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
+     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::isDebugLogging
+     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
      */
     public function testAuthenticationWithMissMatchingSignature()
     {
@@ -662,8 +695,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
+     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
      */
     public function testAuthenticationWithMissMatchingSignatureInDebugMode()
     {
@@ -765,8 +798,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::setDebugLogging
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::isDebugLogging
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::setDebugLogging
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::isDebugLogging
      */
     public function testSetAndGetDebugLogging()
     {
@@ -775,5 +808,100 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
 
         $adapter->setDebugLogging(true);
         $this->assertTrue($adapter->isDebugLogging());
+    }
+
+    public function dataProviderForTestPreparePostCopy()
+    {
+        return [
+            'unknown content type' => [
+                null,
+                'shouldNotBeCalled',
+            ],
+            'multipart/form-data with no data' => [
+                ContentType::fromString('Content-Type: multipart/form-data; boundary=58971ed4dfcc4'),
+                'shouldBeCalled',
+                "--58971ed4dfcc4--\r\n",
+            ],
+            'multipart/form-data with POST data (name and value)' => [
+                ContentType::fromString('Content-Type: multipart/form-data; boundary=58971ed4dfcc4'),
+                'shouldBeCalled',
+                "--58971ed4dfcc4\r\nContent-Disposition: form-data; name=\"foo\"\r\nContent-Length: 3\r\n\r\nbar\r\n--58971ed4dfcc4--\r\n",
+                [
+                    'foo' => 'bar',
+                ],
+            ],
+            'multipart/form-data with POST data (name only)' => [
+                ContentType::fromString('Content-Type: multipart/form-data; boundary=58971ed4dfcc4'),
+                'shouldBeCalled',
+                "--58971ed4dfcc4\r\nContent-Disposition: form-data; name=\"foo\"\r\n\r\n\r\n--58971ed4dfcc4--\r\n",
+                [
+                    'foo' => '',
+                ],
+            ],
+            'multipart/form-data with FILE data' => [
+                ContentType::fromString('Content-Type: multipart/form-data; boundary=58971ed4dfcc4'),
+                'shouldBeCalled',
+                "--58971ed4dfcc4\r\nContent-Disposition: form-data; name=\"file\"; filename=\"foo.txt\"\r\nContent-Length: 5\r\nContent-Type: text/plain\r\n\r\n1234\n\r\n--58971ed4dfcc4--\r\n",
+                [],
+                [
+                    'file' => [
+                        'name' => 'foo.txt',
+                        'size' => 5,
+                        'type' => 'text/plain',
+                        'tmp_name' => __DIR__ . '/../../../../resources/Unit/Authentication/Adapter/TokenHeaderAuthenticationAdapterTest/testPreparePostCopy/test.txt',
+                    ],
+                ],
+            ],
+            'multipart/form-data with POST and FILE data' => [
+                ContentType::fromString('Content-Type: multipart/form-data; boundary=58971ed4dfcc4'),
+                'shouldBeCalled',
+                "--58971ed4dfcc4\r\nContent-Disposition: form-data; name=\"foo\"\r\nContent-Length: 3\r\n\r\nbar\r\n--58971ed4dfcc4\r\nContent-Disposition: form-data; name=\"file\"; filename=\"foo.txt\"\r\nContent-Length: 5\r\nContent-Type: text/plain\r\n\r\n1234\n\r\n--58971ed4dfcc4--\r\n",
+                [
+                    'foo' => 'bar',
+                ],
+                [
+                    'file' => [
+                        'name' => 'foo.txt',
+                        'size' => 5,
+                        'type' => 'text/plain',
+                        'tmp_name' => __DIR__ . '/../../../../resources/Unit/Authentication/Adapter/TokenHeaderAuthenticationAdapterTest/testPreparePostCopy/test.txt',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::preparePostCopy
+     * @dataProvider dataProviderForTestPreparePostCopy
+     */
+    public function testPreparePostCopy($contentType, $callExpectation, $expectedContent = '', $postData = [], $fileData = [])
+    {
+        $headers = $this->prophesize(Headers::class);
+        $headers->get('Content-Type')
+            ->shouldBeCalled()
+            ->willReturn($contentType);
+        $headers = $headers->reveal();
+
+        $request = $this->prophesize(Request::class);
+        $request->getHeaders()
+            ->shouldBeCalled()
+            ->willReturn($headers);
+        $request->getPost()
+            ->$callExpectation()
+            ->willReturn($postData);
+        $request->getFiles()
+            ->$callExpectation()
+            ->willReturn($fileData);
+        $request = $request->reveal();
+
+        $requestCopy = $this->prophesize(Request::class);
+        $requestCopy->setContent($expectedContent)
+            ->$callExpectation();
+        $requestCopy = $requestCopy->reveal();
+
+        $preparePostCopy = $this->getMethod('preparePostCopy');
+        $adapter = new TokenHeaderAuthenticationAdapter();
+        $preparePostCopy->invokeArgs($adapter, [$request, $requestCopy]);
     }
 }

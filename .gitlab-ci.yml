@@ -23,7 +23,7 @@ test:php-unit:5.6:
         - composer install --no-interaction
         # lint php files
         - find src -name '*.php' -exec php -l {} \;
-        - find test -name '*.php' -exec php -l {} \;
+        - find tests -name '*.php' -exec php -l {} \;
         # run unit tests
         - vendor/bin/phpunit --colors=never
 
@@ -36,7 +36,7 @@ test:php-unit:7.0:
         - composer install --no-interaction
         # lint php files
         - find src -name '*.php' -exec php -l {} \;
-        - find test -name '*.php' -exec php -l {} \;
+        - find tests -name '*.php' -exec php -l {} \;
         # run unit tests and fetch coverage
         - vendor/bin/phpunit --coverage-clover .report/phpunit.coverage.xml --log-junit .report/phpunit.xml --coverage-text --colors=never
     artifacts:

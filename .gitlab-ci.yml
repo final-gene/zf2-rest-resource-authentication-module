@@ -47,9 +47,9 @@ test:php-unit:7.0:
 analyze:sonar:
     type: analyze
     tags:
-        - sonar-php
+        - sonar-scanner
     script:
         # run sonar analyze
-        - sonar-runner
+        - sonar-scanner
     dependencies:
         - test:php-unit:7.0

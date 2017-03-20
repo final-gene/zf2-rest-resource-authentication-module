@@ -203,8 +203,8 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
             foreach ($request->getPost() as $name => $value) {
                 $content.= sprintf("--%s\r\n", $boundary);
                 $content.= sprintf("Content-Disposition: form-data; name=\"%s\"\r\n", $name);
-                if (!empty($value)) {
-                    $content.= sprintf("Content-Length: %d\r\n", strlen($value));
+                if (0 !== ($contentLength = strlen($value))) {
+                    $content.= sprintf("Content-Length: %d\r\n", $contentLength);
                 }
                 $content.= sprintf("\r\n%s\r\n", $value);
             }

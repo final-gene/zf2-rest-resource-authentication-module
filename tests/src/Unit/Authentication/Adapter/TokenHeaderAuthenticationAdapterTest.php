@@ -838,6 +838,30 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
                     'foo' => '',
                 ],
             ],
+            'multipart/form-data with POST data with zero int value' => [
+                ContentType::fromString('Content-Type: multipart/form-data; boundary=58971ed4dfcc4'),
+                'shouldBeCalled',
+                "--58971ed4dfcc4\r\nContent-Disposition: form-data; name=\"foo\"\r\nContent-Length: 1\r\n\r\n0\r\n--58971ed4dfcc4--\r\n",
+                [
+                    'foo' => '0',
+                ],
+            ],
+            'multipart/form-data with POST data with zero float value' => [
+                ContentType::fromString('Content-Type: multipart/form-data; boundary=58971ed4dfcc4'),
+                'shouldBeCalled',
+                "--58971ed4dfcc4\r\nContent-Disposition: form-data; name=\"foo\"\r\nContent-Length: 3\r\n\r\n0.0\r\n--58971ed4dfcc4--\r\n",
+                [
+                    'foo' => '0.0',
+                ],
+            ],
+            'multipart/form-data with POST data with boolean false value' => [
+                ContentType::fromString('Content-Type: multipart/form-data; boundary=58971ed4dfcc4'),
+                'shouldBeCalled',
+                "--58971ed4dfcc4\r\nContent-Disposition: form-data; name=\"foo\"\r\nContent-Length: 5\r\n\r\nfalse\r\n--58971ed4dfcc4--\r\n",
+                [
+                    'foo' => 'false',
+                ],
+            ],
             'multipart/form-data with FILE data' => [
                 ContentType::fromString('Content-Type: multipart/form-data; boundary=58971ed4dfcc4'),
                 'shouldBeCalled',

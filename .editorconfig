@@ -16,3 +16,7 @@ insert_final_newline = true
 # Markdown file settings
 [*.md]
 trim_trailing_whitespace = false
+
+# YML file settings
+[*.yml]
+indent_size = 2

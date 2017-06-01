@@ -1,55 +1,83 @@
+# define stages
 types:
-  - test
-  - analyze
+  - test:basis
+  - test:run
+  - test:analyse
 
-before_script:
-    # force php 7.0
-    - shopt -s expand_aliases
-    - echo 'set alias for PHP'; [[ `which php7.0 > /dev/null` || $? == 0 ]] && alias php='php7.0' || echo 'Runner does not support PHP 7.0'
-    - php --version
-    # validate composer
+########################################################################################################################
+# test stages
+
+# run composer and load (dev) dependencies
+test:composer:
+  type: test:basis
+  tags:
+    - docker
+  image: docker.final-gene.de/docker/final-gene/composer
+  script:
     - composer validate --no-check-all --no-check-publish
+    - composer install --no-interaction --ignore-platform-reqs
+  artifacts:
+    paths:
+      - vendor/
+    expire_in: 1 hour
 
-test:php-unit:5.6:
-    type: test
-    tags:
-        - php5.6
-    script:
-        # force php 5.6
-        - shopt -s expand_aliases
-        - which php5 > /dev/null; [[ $? == 0 ]] && alias php='php5' || echo 'Runner does not support PHP 5.6'
-        - php --version
-        # install dependencies
-        - composer install --no-interaction
-        # lint php files
-        - find src -name '*.php' -exec php -l {} \;
-        - find tests -name '*.php' -exec php -l {} \;
-        # run unit tests
-        - vendor/bin/phpunit --colors=never
+# run unit tests
+test:phpunit:5.6:
+  type: test:run
+  tags:
+    - docker
+  dependencies:
+    - test:composer
+  image: docker.final-gene.de/docker/final-gene/php-cli:5.6
+  script:
+    # lint php files
+    - find src/ -name '*.php' -print0 | xargs -0 php -l
+    - find tests/ -name '*.php' -print0 | xargs -0 php -l
+    # run unit tests
+    - vendor/bin/phpunit --colors=never
 
-test:php-unit:7.0:
-    type: test
-    tags:
-        - php7.0
-        - php-xdebug
-    script:
-        # install dependencies
-        - composer install --no-interaction
-        # lint php files
-        - find src -name '*.php' -exec php -l {} \;
-        - find tests -name '*.php' -exec php -l {} \;
-        # run unit tests and fetch coverage
-        - vendor/bin/phpunit --coverage-clover .report/phpunit.coverage.xml --log-junit .report/phpunit.xml --coverage-text --colors=never
-    artifacts:
-        paths:
-            - tests/.report/**
+# run unit tests
+test:phpunit:7.0:
+  type: test:run
+  tags:
+    - docker
+  dependencies:
+    - test:composer
+  image: docker.final-gene.de/docker/final-gene/php-cli:7.0
+  script:
+    # lint php files
+    - find src/ -name '*.php' -print0 | xargs -0 php -l
+    - find tests/ -name '*.php' -print0 | xargs -0 php -l
+    # run unit tests
+    - vendor/bin/phpunit --colors=never
 
-analyze:sonar:
-    type: analyze
-    tags:
-        - sonar-scanner
-    script:
-        # run sonar analyze
-        - sonar-scanner
-    dependencies:
-        - test:php-unit:7.0
+# run unit tests
+test:phpunit:7.1:
+  type: test:run
+  tags:
+    - docker
+  dependencies:
+    - test:composer
+  image: docker.final-gene.de/docker/final-gene/php-cli:7.1-xdebug
+  script:
+    # lint php files
+    - find src/ -name '*.php' -print0 | xargs -0 php -l
+    - find tests/ -name '*.php' -print0 | xargs -0 php -l
+    # run unit tests
+    - vendor/bin/phpunit --coverage-clover .report/phpunit.coverage.xml --log-junit .report/phpunit.xml --coverage-text --colors=never
+  artifacts:
+    paths:
+      - tests/.report/
+    expire_in: 1 hour
+
+# run sonar scanner to analyse code
+test:sonar:
+  type: test:analyse
+  tags:
+    - docker
+  dependencies:
+    - test:phpunit:7.1
+  image: docker.final-gene.de/docker/final-gene/sonar-scanner:2.8
+  script:
+    # start scan - use git branch/tag name as version
+    - sonar-scanner -Dsonar.projectVersion=${CI_COMMIT_REF_NAME}

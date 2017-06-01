@@ -67,7 +67,7 @@ test:phpunit:7.1:
     - vendor/bin/phpunit --coverage-clover .report/phpunit.coverage.xml --log-junit .report/phpunit.xml --coverage-text --colors=never
   artifacts:
     paths:
-      - .report/
+      - tests/.report/
     expire_in: 1 hour
 
 # run sonar scanner to analyse code

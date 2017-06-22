@@ -70,6 +70,18 @@ test:phpunit:7.1:
       - tests/.report/
     expire_in: 1 hour
 
+# run sonar scanner to add comments into gitlab
+test:analyze:
+  type: test:analyse
+  tags:
+    - docker
+  dependencies:
+    - test:phpunit:7.1
+  image: finalgene/sonar-scanner:2.8
+  script:
+    # use preview mode to send comments to gitlab
+    - sonar-scanner -Dsonar.analysis.mode=issues -Dsonar.gitlab.project_id=${CI_PROJECT_PATH} -Dsonar.gitlab.commit_sha=${CI_COMMIT_SHA} -Dsonar.gitlab.ref_name=${CI_COMMIT_REF_NAME}
+
 # run sonar scanner to analyse code
 test:sonar:
   type: test:analyse

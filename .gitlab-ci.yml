@@ -91,5 +91,5 @@ test:sonar:
     - test:phpunit:7.1
   image: finalgene/sonar-scanner:2.8
   script:
-    # start scan - use git branch/tag name as version
-    - sonar-scanner -Dsonar.projectVersion=${CI_COMMIT_REF_NAME} -Dsonar.links.homepage=${CI_PROJECT_URL} -Dsonar.links.issue=${CI_PROJECT_URL}/issues -Dsonar.projectKey=${CI_PROJECT_PATH_SLUG} -Dsonar.projectName=${CI_PROJECT_PATH}
+    # start scan - use git tag as version
+    - sonar-scanner -Dsonar.branch=${CI_COMMIT_REF_NAME} -Dsonar.projectVersion=${CI_COMMIT_TAG} -Dsonar.links.homepage=${CI_PROJECT_URL} -Dsonar.links.issue=${CI_PROJECT_URL}/issues -Dsonar.projectKey=${CI_PROJECT_PATH_SLUG} -Dsonar.projectName=${CI_PROJECT_PATH}

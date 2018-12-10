@@ -6,3 +6,4 @@
 .idea/inspectionProfiles
 .idea/scopes
 vendor/
+composer.lock

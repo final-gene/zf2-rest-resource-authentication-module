@@ -2,14 +2,8 @@
     "name": "final-gene/rest-resource-authentication-module",
     "description": "Authentication functionality for REST resources",
     "type": "library",
-    "homepage": "https://gitlab.final-gene.de/final-gene/rest-resource-authentication-module",
-    "license": "proprietary",
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://satis.final-gene.de"
-        }
-    ],
+    "homepage": "https://github.com/final-gene/zf2-rest-resource-authentication-module",
+    "license": "MIT",
     "authors": [
         {
             "name": "Frank Giesecke",

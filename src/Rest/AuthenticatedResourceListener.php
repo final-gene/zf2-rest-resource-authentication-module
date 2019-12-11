@@ -56,7 +56,7 @@ abstract class AuthenticatedResourceListener extends AbstractResourceListener
     /**
      * @param EventManagerInterface $events
      */
-    public function attach(EventManagerInterface $events)
+    public function attach(EventManagerInterface $events, $priority = 1)
     {
         $events->attach('create', [$this, 'authenticate'], 10);
         $events->attach('delete', [$this, 'authenticate'], 10);
